@@ -59,6 +59,8 @@ public class QLNV_FORM extends javax.swing.JFrame {
 
         lblNgaySinh.setText("NGÀY SINH");
 
+        txtHoTen.setText("ádas");
+
         btnKTra.setText("KIỂN TRA");
         btnKTra.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
