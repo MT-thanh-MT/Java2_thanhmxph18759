@@ -3,17 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package lab3;
+package Lab5;
 
-import Lab5.XFile;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import lab3.QLSV;
-import lab3.SinhVien;
 
 /**
  *
@@ -32,8 +32,21 @@ public class QLSV_form extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         clearForm();
         this.ql = new QLSV();
-        this.ql.Add(new SinhVien("thanh", "Ứng dụng phần mềm", (float) 9.5));
-        this.ql.Add(new SinhVien("khanh", "Thiết kế WEB", (float) 7.4));
+
+        QLSV ListSV = new QLSV();
+        try {
+            ListSV = (QLSV) XFile.readQLSV("sinh_vien.txt");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            JOptionPane.showConfirmDialog(this, "đọc file thất bại");
+        } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
+            JOptionPane.showConfirmDialog(this, "đọc file thất bại");
+        }
+        for (SinhVien sinhVien : ListSV.getList()) {
+            this.ql.Add(sinhVien);
+        }
+        
         
         this.fillTable();
     }
@@ -326,8 +339,16 @@ public class QLSV_form extends javax.swing.JFrame {
         }
         SinhVien sv = this.getDanhSach();
         this.ql.Add(sv);
+        try {
+            XFile.writeQLSV("sinh_vien.txt", this.ql);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            JOptionPane.showConfirmDialog(this, "Ghi file thất bại");
+            return;
+        }
         fillTable();
         clearForm();
+        JOptionPane.showMessageDialog(this, "Thêm thành công");
     }//GEN-LAST:event_btnThemActionPerformed
 
     private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
@@ -342,8 +363,15 @@ public class QLSV_form extends javax.swing.JFrame {
         if (xacNhan == JOptionPane.YES_OPTION) {
 
             this.ql.Remove(index);
+            try {
+                XFile.writeQLSV("sinh_vien.txt", this.ql);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                JOptionPane.showConfirmDialog(this, "Ghi file thất bại");
+                return;
+            }
             this.fillTable();
-            JOptionPane.showMessageDialog(this, "Delete successfully");
+            JOptionPane.showMessageDialog(this, "Xóa thành công");
             clearForm();
         } else if (xacNhan == JOptionPane.NO_OPTION) {
             return;
@@ -364,12 +392,21 @@ public class QLSV_form extends javax.swing.JFrame {
         }
         SinhVien sv = this.getDanhSach();
         this.ql.Update(index, sv);
+        try {
+            XFile.writeQLSV("sinh_vien.txt", this.ql);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            JOptionPane.showConfirmDialog(this, "Ghi file thất bại");
+            return;
+        }
         fillTable();
         clearForm();
+        JOptionPane.showMessageDialog(this, "Cập nhập thành công");
     }//GEN-LAST:event_btnCapNhapActionPerformed
 
     private void btnNhapMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNhapMoiActionPerformed
         clearForm();
+        fillTable();
     }//GEN-LAST:event_btnNhapMoiActionPerformed
 
     private void tblSinhVienMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblSinhVienMouseClicked
@@ -392,7 +429,7 @@ public class QLSV_form extends javax.swing.JFrame {
     }//GEN-LAST:event_tblSinhVienMouseClicked
 
     private void btnSxTenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSxTenActionPerformed
-       this.ql.orderByName();
+        this.ql.orderByName();
 
         fillTable();
     }//GEN-LAST:event_btnSxTenActionPerformed
@@ -411,6 +448,7 @@ public class QLSV_form extends javax.swing.JFrame {
         this.cbbNganh.setSelectedIndex(0);
         this.lblErrorDiem.setText("");
         this.lblErrorHoTen.setText("");
+        
     }
 
     public boolean checkForm() {
@@ -484,6 +522,7 @@ public class QLSV_form extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(QLSV_form.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
